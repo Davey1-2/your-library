@@ -16,9 +16,12 @@ export default function BookForm({ form, genres, onChange, onSubmit }) {
                 <div className="col-md-2">
                     <select name="genreId" className="form-control" value={form.genreId} onChange={onChange} required>
                         <option value="">Select Genre</option>
-                        {genres.map(g => (
-                            <option key={g._id} value={g._id}>{g.genreName}</option>
-                        ))}
+                        {[...genres]
+                            .sort((a, b) => a.genreName.localeCompare(b.genreName))
+                            .map(g => (
+                                <option key={g._id} value={g._id}>{g.genreName}</option>
+                            ))
+                        }
                     </select>
                 </div>
                 <div className="col-md-1 d-flex align-items-center">

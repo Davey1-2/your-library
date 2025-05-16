@@ -6,11 +6,21 @@ const booksController = require('../controllers/booksController');
 router.get('/', async (req, res) => {
     try {
         const books = await Book.find().populate('genreId');
-        res.json(books); // ✅ This line must exist
+        res.json(books);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
+
+router.put('/:id', async (req, res) => {
+    try {
+        const book = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json(book);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 
 
 router.get('/', booksController.getAllBooks);

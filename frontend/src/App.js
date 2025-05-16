@@ -1,8 +1,10 @@
-// src/App.js
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import BookForm from './components/BookForm';
 import BookTable from './components/BookTable';
+import Navbar from './components/Navbar';
+import GenresList from './components/GenresList'; // ✅ Import the new component
 
 export default function App() {
   const [genres, setGenres] = useState([]);
@@ -44,14 +46,19 @@ export default function App() {
     const url = form._id ? `/api/books/${form._id}` : '/api/books';
 
     await fetch(url, {
-      method: method,
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      method,
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form)
     });
 
-    setForm({ bookName: '', author: '', releaseDate: '', genreId: '', readCheck: false, _id: null });
+    setForm({
+      bookName: '',
+      author: '',
+      releaseDate: '',
+      genreId: '',
+      readCheck: false,
+      _id: null
+    });
     fetchBooks();
   };
 
@@ -60,26 +67,37 @@ export default function App() {
   };
 
   const handleDelete = async (id) => {
-    await fetch(`/api/books/${id}`, {
-      method: 'DELETE'
-    });
+    await fetch(`/api/books/${id}`, { method: 'DELETE' });
     fetchBooks();
   };
 
   return (
-      <div className="container mt-5">
-        <h1 className="mb-4">Your Library</h1>
-        <BookForm
-            form={form}
-            genres={genres}
-            onChange={handleChange}
-            onSubmit={handleSubmit}
-        />
-        <BookTable
-            books={books}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-        />
-      </div>
+      <Router>
+        <Navbar />
+        <div className="container mt-5">
+          <Routes>
+            <Route
+                path="/"
+                element={
+                  <>
+                    <h1 className="mb-4">Your Library</h1>
+                    <BookForm
+                        form={form}
+                        genres={genres}
+                        onChange={handleChange}
+                        onSubmit={handleSubmit}
+                    />
+                    <BookTable
+                        books={books}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                    />
+                  </>
+                }
+            />
+            <Route path="/genres" element={<GenresList genres={genres} />} />
+          </Routes>
+        </div>
+      </Router>
   );
 }

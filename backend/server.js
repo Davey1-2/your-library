@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-
 const bookRoutes = require('./routes/books');
 const genreRoutes = require('./routes/genres');
 
@@ -13,6 +12,9 @@ mongoose.connect('mongodb://localhost:27017/booksdb', {
 });
 
 app.use(bodyParser.json());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
 
 app.use('/api/books', bookRoutes);
 app.use('/api/genres', genreRoutes);
