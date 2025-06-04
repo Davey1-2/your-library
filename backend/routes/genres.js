@@ -10,10 +10,13 @@ router.get('/', genreController.showAllGenres);
 // Create a new genre
 router.post('/', async (req, res) => {
     try {
+        console.log('POST BODY:', req.body); // 👈 přidej log
         const genre = new Genre({ genreName: req.body.genreName });
         await genre.save();
+        console.log('GENRE SAVED:', genre);  // 👈 přidej log
         res.status(201).json(genre);
     } catch (err) {
+        console.error('SAVE ERROR:', err);   // 👈 přidej log
         res.status(500).json({ message: err.message });
     }
 });
@@ -32,6 +35,19 @@ router.get('/book', async (req, res) => {
         res.json(books);
     } catch (err) {
         console.error(err);
+        res.status(500).json({ message: err.message });
+    }
+});
+router.delete('/:id', async (req, res) => {
+    try {
+        const genre = await Genre.findByIdAndDelete(req.params.id);
+
+        if (!genre) {
+            return res.status(404).json({ message: 'Genre not found' });
+        }
+
+        res.json({ message: 'Genre deleted successfully' });
+    } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
