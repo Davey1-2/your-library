@@ -38,6 +38,16 @@ export default function App() {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm({ ...form, [name]: type === 'checkbox' ? checked : value });
+  }
+
+  const handleToggleRead = async (book) => {
+    const updatedBook = { ...book, readCheck: !book.readCheck };
+    await fetch(`/api/books/${book._id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedBook)
+    });
+    fetchBooks();
   };
 
   const handleSubmit = async (e) => {
@@ -91,6 +101,7 @@ export default function App() {
                         books={books}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
+                        onToggleRead={handleToggleRead}
                     />
                   </>
                 }
